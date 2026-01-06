@@ -329,6 +329,9 @@
             margin-bottom: 2rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         .back-button:hover {
@@ -668,9 +671,9 @@
 
         <!-- Member Detail View -->
         <div id="memberDetail">
-            <a href="#" class="back-button" onclick="showGrid(); return false;">
+            <button class="back-button" onclick="showGrid()">
                 ← Back to All Members
-            </a>
+            </button>
             <div class="detail-container" id="detailContent"></div>
         </div>
     </div>
@@ -682,21 +685,57 @@
     </footer>
 
     <script>
-        // Replace with your actual Apps Script Web App URL
+        // Your Apps Script Web App URL
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJg1oIZjXEplsFgvG6n9TAFFl2CE5FEbdp-Bm0LG61Oc0O1jrkfTK-YwkO_7UZFCFy/exec';
 
         let membersData = [];
 
         // Fetch members data
         async function fetchMembers() {
+            const loading = document.getElementById('loading');
+            
             try {
+                console.log('Fetching from:', APPS_SCRIPT_URL);
+                loading.innerHTML = 'Connecting to database...';
+                
                 const response = await fetch(APPS_SCRIPT_URL);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('Received data:', data);
+                
+                if (data.error) {
+                    throw new Error(data.error + (data.message ? ': ' + data.message : ''));
+                }
+                
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format received');
+                }
+                
                 membersData = data.filter(member => member.Active === 'Yes');
+                console.log('Active members:', membersData.length);
+                
+                if (membersData.length === 0) {
+                    loading.innerHTML = 'No active members found.';
+                    return;
+                }
+                
                 displayMembersGrid();
             } catch (error) {
                 console.error('Error fetching members:', error);
-                document.getElementById('loading').innerHTML = 'Error loading members. Please try again later.';
+                loading.innerHTML = `
+                    <div style="color: #e74c3c;">
+                        <h3>Error loading members</h3>
+                        <p>${error.message}</p>
+                        <p style="font-size: 0.9rem; margin-top: 1rem;">
+                            Please check the browser console (F12) for more details.
+                        </p>
+                    </div>
+                `;
             }
         }
 
@@ -710,7 +749,7 @@
             grid.innerHTML = membersData.map((member, index) => `
                 <div class="member-card" onclick="showMemberDetail(${index})" style="animation-delay: ${index * 0.1}s">
                     <div class="member-image-container">
-                        <img src="${member.Image}" alt="${member.Name}" class="member-image" loading="lazy">
+                        <img src="${member.Image}" alt="${member.Name}" class="member-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=${encodeURIComponent(member.Name)}'">
                         <div class="member-overlay">
                             <p>${member.Description ? member.Description.substring(0, 80) + '...' : 'Click to view full profile'}</p>
                         </div>
@@ -730,20 +769,20 @@
             const detail = document.getElementById('memberDetail');
             const detailContent = document.getElementById('detailContent');
 
-            // Parse arrays
-            const watchlist = member.Watchlist ? member.Watchlist.split(',').map(item => item.trim()).filter(item => item) : [];
-            const books = member.Books ? member.Books.split(',').map(item => item.trim()).filter(item => item) : [];
-            const experience = member.Experience ? member.Experience.split(',').map(item => item.trim()).filter(item => item) : [];
-            const pitches = member.Pitches ? member.Pitches.split(',').map(item => item.trim()).filter(item => item) : [];
+            // Parse arrays - handle both comma and other separators
+            const watchlist = member.Watchlist ? member.Watchlist.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
+            const books = member.Books ? member.Books.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
+            const experience = member.Experience ? member.Experience.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
+            const pitches = member.Pitches ? member.Pitches.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
 
             detailContent.innerHTML = `
                 <div class="detail-header">
-                    <img src="${member.Image}" alt="${member.Name}" class="detail-image">
+                    <img src="${member.Image}" alt="${member.Name}" class="detail-image" onerror="this.src='https://via.placeholder.com/400x500?text=${encodeURIComponent(member.Name)}'">
                     <div class="detail-info">
                         <h2 class="detail-name">${member.Name}</h2>
                         <p class="detail-position">${member.Position}</p>
                         <p class="detail-description">${member.Description || 'No description available.'}</p>
-                        ${member.Linkedin ? `
+                        ${member.Linkedin && member.Linkedin !== '__' ? `
                             <a href="${member.Linkedin}" target="_blank" class="linkedin-link">
                                 <span>in</span> LinkedIn
                             </a>
@@ -813,7 +852,7 @@
                                             const parts = pitch.split(':').map(p => p.trim());
                                             const stockName = parts[0] || pitch;
                                             const decision = parts[1] || 'Pending';
-                                            const statusClass = decision.toLowerCase() === 'pending' ? 'status-pending' : 'status-completed';
+                                            const statusClass = decision.toLowerCase().includes('pending') ? 'status-pending' : 'status-completed';
                                             
                                             return `
                                                 <tr>
