@@ -35,9 +35,10 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             z-index: 1000;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             transition: all 0.3s ease;
         }
 
@@ -56,7 +57,12 @@
         }
 
         .nav-simple .nav-links {
-            display: none;
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-simple .nav-links a {
+            color: var(--white);
         }
 
         /* Navigation - Full version after scroll */
@@ -83,11 +89,8 @@
             color: var(--dark);
         }
 
-        nav.scrolled .nav-links {
-            display: flex !important;
-            gap: 2.5rem;
-            list-style: none;
-            align-items: center;
+        nav.scrolled .nav-links a {
+            color: var(--dark);
         }
 
         .logo-text {
@@ -147,6 +150,7 @@
         /* Hero Section */
         .hero {
             min-height: 100vh;
+            width: 100vw;
             display: flex;
             align-items: center;
             justify-content: flex-start;
@@ -157,6 +161,7 @@
             padding: 8rem 4rem 4rem;
             position: relative;
             overflow: hidden;
+            margin: 0;
         }
 
         .hero::before {
@@ -170,40 +175,6 @@
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             z-index: 0;
-        }
-
-        .hero-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(138, 192, 71, 0.3);
-            border-radius: 50%;
-            animation: particleFloat 20s infinite;
-        }
-
-        @keyframes particleFloat {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.5;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(50px);
-                opacity: 0;
-            }
         }
 
         .hero-content {
@@ -673,7 +644,6 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-particles" id="particles"></div>
         <div class="hero-content">
             <p class="university-tag">Ashoka University</p>
             <h1 class="hero-title"><span class="hero-title-green">BODHI</span>CAPITAL</h1>
@@ -762,12 +732,12 @@
         <p style="text-align: center; color: var(--gray); font-size: 1.2rem; margin-bottom: 3rem;">A fundamentals-first, long-term approach guided by discipline, literacy, and community building.</p>
         <div class="operate-grid">
             <div class="operate-card">
-                <div class="operate-icon">🌐</div>
+                <div class="operate-icon">🎯</div>
                 <h3>Focused on Fundamentals</h3>
                 <p>We invest in companies with proven track records, strong management, and sustainable competitive advantages, regardless of industry.</p>
             </div>
             <div class="operate-card">
-                <div class="operate-icon">🌱</div>
+                <div class="operate-icon">📚</div>
                 <h3>Cultivating Financial Literacy</h3>
                 <p>Our mission extends beyond investment returns. We strive to educate and inspire Ashoka students to become financially independent individuals.</p>
             </div>
@@ -798,22 +768,6 @@
     </footer>
 
     <script>
-        // Create floating particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 15; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.width = Math.random() * 10 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 20 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
-                container.appendChild(particle);
-            }
-        }
-        createParticles();
-
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
