@@ -686,7 +686,7 @@
 
     <script>
         // Your Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJg1oIZjXEplsFgvG6n9TAFFl2CE5FEbdp-Bm0LG61Oc0O1jrkfTK-YwkO_7UZFCFy/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzneNLZfK3nfJHp-jTCBVn6xHeSUbV8atW_eC_qX3-gpTzg1mUcwmDo6EA7T93_uds/exec';
 
         let membersData = [];
 
@@ -716,7 +716,7 @@
                     throw new Error('Invalid data format received');
                 }
                 
-                membersData = data.filter(member => member.Active === 'Yes');
+                membersData = data.filter(member =>(member.Active || '').toString().trim().toLowerCase().startsWith('y'));
                 console.log('Active members:', membersData.length);
                 
                 if (membersData.length === 0) {
