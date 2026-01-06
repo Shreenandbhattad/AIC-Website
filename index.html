@@ -36,7 +36,7 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             z-index: 1000;
             padding: 1rem 0;
@@ -47,6 +47,7 @@
         nav.scrolled {
             padding: 0.5rem 0;
             box-shadow: 0 2px 30px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .nav-container {
@@ -126,7 +127,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            background-image: url('background.jpg');
+            background-image: url('background.jpeg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -142,53 +143,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(0, 30, 60, 0.85) 0%, rgba(0, 50, 100, 0.6) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
             z-index: 0;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% {
-                background: linear-gradient(135deg, rgba(0, 30, 60, 0.85) 0%, rgba(0, 50, 100, 0.6) 100%);
-            }
-            50% {
-                background: linear-gradient(135deg, rgba(0, 40, 80, 0.8) 0%, rgba(0, 60, 120, 0.65) 100%);
-            }
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--white);
-            border-top: none;
-            border-left: none;
-            transform: translateX(-50%) rotate(45deg);
-            animation: bounce 2s infinite;
-            z-index: 2;
-            margin-bottom: 2rem;
-            opacity: 0.7;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateX(-50%) translateY(0) rotate(45deg);
-                opacity: 0.7;
-            }
-            40% {
-                transform: translateX(-50%) translateY(-10px) rotate(45deg);
-                opacity: 1;
-            }
-            60% {
-                transform: translateX(-50%) translateY(-5px) rotate(45deg);
-                opacity: 0.9;
-            }
         }
 
         /* Animated particles */
@@ -533,24 +491,6 @@
             overflow: hidden;
         }
 
-        .operate-card::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(138, 192, 71, 0.1);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-        }
-
-        .operate-card:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
         .operate-card:hover {
             background: var(--white);
             box-shadow: 0 20px 60px rgba(0,0,0,0.12);
@@ -560,23 +500,22 @@
         .operate-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary-green), #6fa030);
-            border-radius: 50%;
+            background: rgba(138, 192, 71, 0.1);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
             font-size: 2rem;
-            color: var(--white);
+            color: var(--primary-green);
             transition: all 0.4s ease;
             position: relative;
             z-index: 1;
-            box-shadow: 0 10px 30px rgba(138, 192, 71, 0.3);
         }
 
         .operate-card:hover .operate-icon {
             transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(138, 192, 71, 0.4);
+            background: rgba(138, 192, 71, 0.15);
         }
 
         .operate-card h3 {
@@ -767,7 +706,7 @@
         <p style="text-align: center; color: var(--gray); font-size: 1.2rem; margin-bottom: 3rem;">A fundamentals-first, long-term approach guided by discipline, literacy, and community building.</p>
         <div class="operate-grid">
             <div class="operate-card">
-                <div class="operate-icon">📊</div>
+                <div class="operate-icon">🎯</div>
                 <h3>Focused on Fundamentals</h3>
                 <p>We invest in companies with proven track records, strong management, and sustainable competitive advantages, regardless of industry.</p>
             </div>
@@ -777,7 +716,7 @@
                 <p>Our mission extends beyond investment returns. We strive to educate and inspire Ashoka students to become financially independent individuals.</p>
             </div>
             <div class="operate-card">
-                <div class="operate-icon">🎯</div>
+                <div class="operate-icon">📈</div>
                 <h3>Long-Term Perspective</h3>
                 <p>We view investments as partnerships, seeking companies with enduring value and potential for long-term growth.</p>
             </div>
