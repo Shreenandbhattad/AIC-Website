@@ -685,207 +685,64 @@
     </footer>
 
     <script>
-        // Your Apps Script Web App URL
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzneNLZfK3nfJHp-jTCBVn6xHeSUbV8atW_eC_qX3-gpTzg1mUcwmDo6EA7T93_uds/exec';
+  // Set your deployed web app URL here (no trailing &callback)
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxtxd_pO-QoqjHhb4uPiEGB_DLCLblGTGUR9MMtSvIXhxeBb-fUSMVB5DNQeTRx1fhU/exec?active=true';
 
-        let membersData = [];
+  // global holder
+  let MEMBERS = [];
 
-        // Fetch members data
-        async function fetchMembers() {
-            const loading = document.getElementById('loading');
-            
-            try {
-                console.log('Fetching from:', APPS_SCRIPT_URL);
-                loading.innerHTML = 'Connecting to database...';
-                
-                const response = await fetch(APPS_SCRIPT_URL);
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Received data:', data);
-                
-                if (data.error) {
-                    throw new Error(data.error + (data.message ? ': ' + data.message : ''));
-                }
-                
-                if (!Array.isArray(data)) {
-                    throw new Error('Invalid data format received');
-                }
-                
-                membersData = data.filter(member =>(member.Active || '').toString().trim().toLowerCase().startsWith('y'));
-                console.log('Active members:', membersData.length);
-                
-                if (membersData.length === 0) {
-                    loading.innerHTML = 'No active members found.';
-                    return;
-                }
-                
-                displayMembersGrid();
-            } catch (error) {
-                console.error('Error fetching members:', error);
-                loading.innerHTML = `
-                    <div style="color: #e74c3c;">
-                        <h3>Error loading members</h3>
-                        <p>${error.message}</p>
-                        <p style="font-size: 0.9rem; margin-top: 1rem;">
-                            Please check the browser console (F12) for more details.
-                        </p>
-                    </div>
-                `;
-            }
-        }
+  // Primary loader: try fetch(), fallback to JSONP if fetch fails (CORS)
+  function loadMembers() {
+    // try fetch first
+    fetch(API_URL, { cache: 'no-store' })
+      .then(resp => {
+        if (!resp.ok) throw new Error('Network response not ok: ' + resp.status);
+        return resp.json();
+      })
+      .then(data => {
+        MEMBERS = Array.isArray(data) ? data : [];
+        renderMembers(MEMBERS); // your existing render function
+      })
+      .catch(err => {
+        console.warn('Fetch failed, falling back to JSONP:', err);
+        // JSONP fallback
+        const callbackName = '__members_jsonp_cb_' + Date.now();
+        // Create a temporary global callback
+        window[callbackName] = function(data) {
+          try {
+            MEMBERS = Array.isArray(data) ? data : [];
+            renderMembers(MEMBERS);
+          } finally {
+            // cleanup: remove script tag and callback
+            const s = document.getElementById(callbackName);
+            if (s) s.parentNode.removeChild(s);
+            try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+          }
+        };
 
-        // Display members grid
-        function displayMembersGrid() {
-            const grid = document.getElementById('membersGrid');
-            const loading = document.getElementById('loading');
-            
-            loading.style.display = 'none';
-            
-            grid.innerHTML = membersData.map((member, index) => `
-                <div class="member-card" onclick="showMemberDetail(${index})" style="animation-delay: ${index * 0.1}s">
-                    <div class="member-image-container">
-                        <img src="${member.Image}" alt="${member.Name}" class="member-image" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300?text=${encodeURIComponent(member.Name)}'">
-                        <div class="member-overlay">
-                            <p>${member.Description ? member.Description.substring(0, 80) + '...' : 'Click to view full profile'}</p>
-                        </div>
-                    </div>
-                    <div class="member-info">
-                        <h3 class="member-name">${member.Name}</h3>
-                        <p class="member-position">${member.Position}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
+        // Append script tag
+        const sep = API_URL.indexOf('?') === -1 ? '?' : '&';
+        const src = API_URL + sep + 'callback=' + encodeURIComponent(callbackName);
+        const script = document.createElement('script');
+        script.src = src;
+        script.id = callbackName;
+        script.onerror = function(e) {
+          // JSONP failed too
+          console.error('JSONP script load failed', e);
+          const container = document.getElementById('membersGrid') || document.body;
+          if (container) {
+            container.innerHTML = '<div style="padding:2rem;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.06);">Error loading members (JSONP failed). Check Apps Script deployment and that the web app is set to "Anyone, even anonymous".</div>';
+          }
+          // cleanup
+          try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+        };
+        document.head.appendChild(script);
+      });
+  }
 
-        // Show member detail
-        function showMemberDetail(index) {
-            const member = membersData[index];
-            const grid = document.getElementById('membersGrid');
-            const detail = document.getElementById('memberDetail');
-            const detailContent = document.getElementById('detailContent');
+  // call loader
+  loadMembers();
+</script>
 
-            // Parse arrays - handle both comma and other separators
-            const watchlist = member.Watchlist ? member.Watchlist.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
-            const books = member.Books ? member.Books.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
-            const experience = member.Experience ? member.Experience.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
-            const pitches = member.Pitches ? member.Pitches.split(/[,;]/).map(item => item.trim()).filter(item => item) : [];
-
-            detailContent.innerHTML = `
-                <div class="detail-header">
-                    <img src="${member.Image}" alt="${member.Name}" class="detail-image" onerror="this.src='https://via.placeholder.com/400x500?text=${encodeURIComponent(member.Name)}'">
-                    <div class="detail-info">
-                        <h2 class="detail-name">${member.Name}</h2>
-                        <p class="detail-position">${member.Position}</p>
-                        <p class="detail-description">${member.Description || 'No description available.'}</p>
-                        ${member.Linkedin && member.Linkedin !== '__' ? `
-                            <a href="${member.Linkedin}" target="_blank" class="linkedin-link">
-                                <span>in</span> LinkedIn
-                            </a>
-                        ` : ''}
-                    </div>
-                </div>
-
-                <div class="detail-sections">
-                    ${watchlist.length > 0 ? `
-                        <div class="detail-section">
-                            <h3 class="section-title">
-                                <span class="section-icon">📊</span>
-                                My Watchlist
-                            </h3>
-                            <div class="watchlist-grid">
-                                ${watchlist.map(stock => `
-                                    <div class="watchlist-item">${stock}</div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    ${books.length > 0 ? `
-                        <div class="detail-section">
-                            <h3 class="section-title">
-                                <span class="section-icon">📚</span>
-                                Books I've Reviewed
-                            </h3>
-                            <div class="books-list">
-                                ${books.map(book => `
-                                    <div class="book-item">${book}</div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    ${experience.length > 0 ? `
-                        <div class="detail-section">
-                            <h3 class="section-title">
-                                <span class="section-icon">💼</span>
-                                Experience
-                            </h3>
-                            <div class="experience-list">
-                                ${experience.map(exp => `
-                                    <div class="experience-item">${exp}</div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    ${pitches.length > 0 ? `
-                        <div class="detail-section">
-                            <h3 class="section-title">
-                                <span class="section-icon">🎯</span>
-                                Pitches
-                            </h3>
-                            <div class="pitches-table">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Stock Name</th>
-                                            <th>Decision</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${pitches.map(pitch => {
-                                            const parts = pitch.split(':').map(p => p.trim());
-                                            const stockName = parts[0] || pitch;
-                                            const decision = parts[1] || 'Pending';
-                                            const statusClass = decision.toLowerCase().includes('pending') ? 'status-pending' : 'status-completed';
-                                            
-                                            return `
-                                                <tr>
-                                                    <td><strong>${stockName}</strong></td>
-                                                    <td><span class="status-badge ${statusClass}">${decision}</span></td>
-                                                </tr>
-                                            `;
-                                        }).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-
-            grid.style.display = 'none';
-            detail.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Show grid view
-        function showGrid() {
-            const grid = document.getElementById('membersGrid');
-            const detail = document.getElementById('memberDetail');
-            
-            detail.style.display = 'none';
-            grid.style.display = 'grid';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Initialize
-        fetchMembers();
-    </script>
 </body>
 </html>
