@@ -55,6 +55,7 @@
             height: 50px;
             width: auto;
             margin-right: 0.3cm;
+            margin-left: 0.3cm; /* shifted 0.3cm to the right */
         }
 
         .nav-simple .nav-links {
@@ -68,8 +69,7 @@
 
         /* Navigation - Full version after scroll */
         nav.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
+            background: var(--white); /* clean, non-blurred background as requested */
             box-shadow: 0 2px 30px rgba(0,0,0,0.1);
             padding: 0.8rem 0;
         }
@@ -155,8 +155,8 @@
             align-items: center;
             justify-content: flex-start;
             background-image: url('background.jpg');
-            background-size: cover;
-            background-position: center center;
+            background-size: 150% auto; /* stretched to the right to cover the first frame */
+            background-position: right center; /* align background to the right */
             background-repeat: no-repeat;
             padding: 8rem 0 4rem 4rem;
             position: relative;
@@ -174,8 +174,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            /* kept the gentle overlay for legibility */
             z-index: 0;
         }
 
@@ -765,7 +764,7 @@
 
     <!-- Footer -->
     <footer>
-        <p>Made by Shreenand Bhattad</p>
+     <!-- <p>Made by Shreenand Bhattad</p> -->
         <p style="margin-top: 0.5rem;">© 2025 Bodhi Capital. All Rights Reserved.</p>
     </footer>
 
