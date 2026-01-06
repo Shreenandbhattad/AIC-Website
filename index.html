@@ -151,23 +151,22 @@
             box-shadow: 0 6px 25px rgba(138, 192, 71, 0.4);
         }
 
-        /* Hero Section */
+/* Hero Section */
         .hero {
             min-height: 100vh;
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: center; /* Centers the content container */
             background-image: url('background.jpg');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            padding: 8rem 4rem 4rem;
+            /* Removed side padding here to let inner container handle alignment */
+            padding-top: 8rem;
+            padding-bottom: 4rem;
             position: relative;
             overflow: hidden;
-            margin-left: calc(-50vw + 50%);
-            margin-right: calc(-50vw + 50%);
-            width: 100vw;
         }
 
         .hero::before {
@@ -184,13 +183,14 @@
         }
 
         .hero-content {
-            max-width: 1400px;
+            width: 100%;
+            max-width: 1400px; /* Matches your Navbar container */
+            margin: 0 auto;    /* Centers the block on large screens */
+            padding: 0 2rem;   /* Matches your Navbar padding */
             text-align: left;
             position: relative;
             z-index: 1;
-            padding-left: 2rem;
         }
-
         .university-tag {
             color: var(--primary-green);
             font-size: 1rem;
