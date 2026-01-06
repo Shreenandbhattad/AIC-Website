@@ -151,25 +151,28 @@
             box-shadow: 0 6px 25px rgba(138, 192, 71, 0.4);
         }
 
-/* Hero Section - Fixed with Zoom Effect */
+/* Hero Section - Final Full Width Fix */
         .hero {
             min-height: 100vh;
-            width: 100%;             /* Fills the container exactly without overflow */
             display: flex;
             align-items: center;
             justify-content: center;
             background-image: url('background.jpg');
             
-            /* ZOOM EFFECT: 110% makes the image slightly larger than the screen */
-            background-size: 110% auto; 
+            /* Ensures the image fills the entire screen perfectly without gaps */
+            background-size: cover; 
             background-position: center center;
             background-repeat: no-repeat;
             
             padding-top: 8rem;
             padding-bottom: 4rem;
             position: relative;
-            overflow: hidden;        /* Keeps the 'zoomed' image from causing scrollbars */
-            margin: 0;               /* Ensures no stray margins */
+            overflow: hidden;
+
+            /* CRITICAL: Overrides the 1400px limit from your global 'section' style */
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
         }
 
         .hero::before {
@@ -187,14 +190,13 @@
 
         .hero-content {
             width: 100%;
-            max-width: 1400px;       /* Aligns your text with the Navbar */
+            max-width: 1400px;       /* Keeps your text aligned with the Navbar */
             margin: 0 auto;
             padding: 0 2rem;
             text-align: left;
             position: relative;
             z-index: 1;
         }
-        
         .university-tag {
             color: var(--primary-green);
             font-size: 1rem;
