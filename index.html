@@ -151,22 +151,25 @@
             box-shadow: 0 6px 25px rgba(138, 192, 71, 0.4);
         }
 
-/* Hero Section - Fixed Full Width */
+/* Hero Section - Fixed with Zoom Effect */
         .hero {
             min-height: 100vh;
-            width: 100%;            /* Fills exactly 100% of the screen width */
-            margin: 0;              /* Removes any side gaps */
+            width: 100%;             /* Fills the container exactly without overflow */
             display: flex;
             align-items: center;
             justify-content: center;
             background-image: url('background.jpg');
-            background-size: cover;
-            background-position: center;
+            
+            /* ZOOM EFFECT: 110% makes the image slightly larger than the screen */
+            background-size: 110% auto; 
+            background-position: center center;
             background-repeat: no-repeat;
+            
             padding-top: 8rem;
             padding-bottom: 4rem;
             position: relative;
-            overflow: hidden;
+            overflow: hidden;        /* Keeps the 'zoomed' image from causing scrollbars */
+            margin: 0;               /* Ensures no stray margins */
         }
 
         .hero::before {
@@ -184,9 +187,9 @@
 
         .hero-content {
             width: 100%;
-            max-width: 1400px;      /* Matches your Navbar width */
-            margin: 0 auto;         /* Centers the text block */
-            padding: 0 2rem;        /* Keeps text from hitting the screen edge */
+            max-width: 1400px;       /* Aligns your text with the Navbar */
+            margin: 0 auto;
+            padding: 0 2rem;
             text-align: left;
             position: relative;
             z-index: 1;
