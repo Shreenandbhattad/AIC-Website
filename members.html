@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members</title>
+    <title>Members - Bodhi Capital</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -368,19 +368,19 @@
 
         .detail-header {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 300px 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
             padding-bottom: 2rem;
             border-bottom: 2px solid var(--light-gray);
         }
 
         .detail-image {
             width: 100%;
-            height: 400px;
+            height: 350px;
             object-fit: cover;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
         }
 
         .detail-info {
@@ -390,21 +390,21 @@
         }
 
         .detail-name {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: var(--dark);
             margin-bottom: 0.5rem;
         }
 
         .detail-position {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--primary-green);
             font-weight: 600;
             margin-bottom: 1.5rem;
         }
 
         .detail-description {
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.8;
             color: var(--gray);
             margin-bottom: 2rem;
@@ -414,7 +414,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: #0077b5;
+            background: var(--primary-green);
             color: var(--white);
             padding: 0.8rem 1.5rem;
             border-radius: 30px;
@@ -422,11 +422,12 @@
             font-weight: 600;
             transition: all 0.3s ease;
             width: fit-content;
+            box-shadow: 0 4px 15px rgba(138, 192, 71, 0.3);
         }
 
         .linkedin-link:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 119, 181, 0.3);
+            box-shadow: 0 8px 25px rgba(138, 192, 71, 0.4);
         }
 
         .detail-sections {
@@ -448,17 +449,10 @@
         }
 
         .section-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-icon {
-            font-size: 1.5rem;
         }
 
         .watchlist-grid {
@@ -494,27 +488,11 @@
         .book-item, .experience-item {
             background: var(--white);
             padding: 1.2rem;
-            padding-left: 3rem;
             border-radius: 10px;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--dark);
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            position: relative;
-        }
-
-        .book-item::before {
-            content: '📚';
-            position: absolute;
-            left: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .experience-item::before {
-            content: '💼';
-            position: absolute;
-            left: 1rem;
-            font-size: 1.3rem;
         }
 
         .book-item:hover, .experience-item:hover {
@@ -588,6 +566,11 @@
         .error-message h3 {
             color: #e74c3c;
             margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .error-message p {
+            line-height: 1.8;
         }
 
         /* Footer */
@@ -694,21 +677,21 @@
             const gridEl = document.getElementById('membersGrid');
             
             try {
-                console.log('🔄 Fetching members from:', API_URL);
+                console.log('Fetching members from:', API_URL);
                 
                 const response = await fetch(API_URL, {
                     method: 'GET',
                     cache: 'no-cache'
                 });
                 
-                console.log('✅ Response status:', response.status);
+                console.log('Response status:', response.status);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
                 const data = await response.json();
-                console.log('📦 Received data:', data);
+                console.log('Received data:', data);
                 
                 // Check for errors
                 if (data.error) {
@@ -726,24 +709,24 @@
                 }
                 
                 membersData = data;
-                console.log('✅ Successfully loaded', membersData.length, 'members');
+                console.log('Successfully loaded', membersData.length, 'members');
                 
                 // Hide loading and display members
                 loadingEl.style.display = 'none';
                 displayMembers();
                 
             } catch (error) {
-                console.error('❌ Error loading members:', error);
+                console.error('Error loading members:', error);
                 loadingEl.innerHTML = `
                     <div class="error-message">
-                        <h3>⚠️ Error Loading Members</h3>
+                        <h3>Error Loading Members</h3>
                         <p>${error.message}</p>
                         <p style="font-size: 0.9rem; margin-top: 1.5rem; color: var(--gray);">
-                            <strong>Troubleshooting steps:</strong><br>
-                            1. Make sure the Apps Script is deployed as a Web App<br>
-                            2. Set "Who has access" to "Anyone"<br>
-                            3. Check that the sheet name is "Members"<br>
-                            4. Check browser console (F12) for details
+                            <strong>Troubleshooting:</strong><br>
+                            1. Verify Apps Script is deployed as Web App<br>
+                            2. Set access to "Anyone"<br>
+                            3. Confirm sheet name is "Members"<br>
+                            4. Check browser console for details
                         </p>
                     </div>
                 `;
@@ -825,10 +808,7 @@
             if (watchlist.length > 0) {
                 html += `
                     <div class="detail-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">📊</span>
-                            My Watchlist
-                        </h3>
+                        <h3 class="section-title">My Watchlist</h3>
                         <div class="watchlist-grid">
                             ${watchlist.map(stock => `<div class="watchlist-item">${stock}</div>`).join('')}
                         </div>
@@ -840,10 +820,7 @@
             if (books.length > 0) {
                 html += `
                     <div class="detail-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">📚</span>
-                            Books I've Reviewed
-                        </h3>
+                        <h3 class="section-title">Books Reviewed</h3>
                         <div class="books-list">
                             ${books.map(book => `<div class="book-item">${book}</div>`).join('')}
                         </div>
@@ -855,10 +832,7 @@
             if (experience.length > 0) {
                 html += `
                     <div class="detail-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">💼</span>
-                            Experience
-                        </h3>
+                        <h3 class="section-title">Experience</h3>
                         <div class="experience-list">
                             ${experience.map(exp => `<div class="experience-item">${exp}</div>`).join('')}
                         </div>
@@ -870,16 +844,13 @@
             if (pitches.length > 0) {
                 html += `
                     <div class="detail-section">
-                        <h3 class="section-title">
-                            <span class="section-icon">🎯</span>
-                            Pitches
-                        </h3>
+                        <h3 class="section-title">Pitches</h3>
                         <div class="pitches-table">
                             <table>
                                 <thead>
                                     <tr>
                                         <th>Stock Name</th>
-                                        <th>Decision</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
