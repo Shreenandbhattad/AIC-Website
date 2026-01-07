@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members</title>
+    <title>Members - Bodhi Capital</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -235,7 +235,6 @@
             opacity: 0;
             transform: translateY(30px);
             animation: fadeInUp 0.6s ease forwards;
-            position: relative;
         }
 
         .member-card:nth-child(1) { animation-delay: 0.1s; }
@@ -723,22 +722,40 @@
 
     <!-- Footer -->
     <footer>
-     <!--   <p>Made by Shreenand Bhattad</p> -->
+        <p>Made by Shreenand Bhattad</p>
         <p style="margin-top: 0.5rem;">© 2025 Bodhi Capital. All Rights Reserved.</p>
     </footer>
 
     <script>
         // REPLACE THIS WITH YOUR DEPLOYED WEB APP URL
-        const API_URL = 'https://script.googleusercontent.com/a/macros/ashoka.edu.in/echo?user_content_key=AehSKLjtUVrOxZ1Hgti-bFqQQDYUdeTufDsNXLcYvYV1Dp09RNzZwwFUIcOd5uHGxUZYZQxKD9wzc338C4wDehOScmIJjaw10tnEMBnm63oGmLNHtTzWKe8uwZsIVCOgieG-4mC21Pdl6tOdalqOQBbICU-b8WbH1zr6Cj8sL6ot0AeJteQCkwNmMTEqxyHi538AoxKtoA_u-b4tecWxCd5jLsSvnwYtYDV-zRt1yLwHN5lYphJ5NccvgJhSoAv5wss_jt0yfZ59c1L9jQDGqubBfs_0qkKGToAFxL-wVdaL-JRBmWjq1ts&lib=MsTsgvK09kGWYFaz1xbK8fDuHTInkCv88';
+        const API_URL = 'https://script.googleusercontent.com/a/macros/ashoka.edu.in/echo?user_content_key=AehSKLhzSn57opq1_qLdm-NhIkAtdNwIkW8YvO1VFkdNb3qdiVq8QMS7LqjZBJK6WGckvh4HG2gf1t83ZpScFaEh7F3PhAYIpRiS1cZ1WcFFLI-IYSvgAAxdjRWL5Y6X47veh6zG-IXTQam_hKlBIeCbZJSUY-_JEX-iO3I-TGnYQzNnKknCm337OfstU_89IiYknF4eAQQLCHJKxRSRmK9IkIXRd0NhNEiAxteDt8SB7URodDMegq_ehUdWRaSIM_1FCmv00ankx9FFpgJqFjZ8_tfere2hRcrqk8EcQSSkJ36LJB_XnNY&lib=MsTsgvK09kGWYFaz1xbK8fDuHTInkCv88';
+        const CACHE_KEY = 'bodhi_members_cache';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
         let membersData = [];
 
-        // Fetch members data
+        // Fetch members data with caching
         async function loadMembers() {
             const loadingEl = document.getElementById('loading');
             const gridEl = document.getElementById('membersGrid');
             
             try {
+                // Check cache first
+                const cached = sessionStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    const { data, timestamp } = JSON.parse(cached);
+                    const age = Date.now() - timestamp;
+                    
+                    // Use cache if less than 5 minutes old
+                    if (age < CACHE_DURATION) {
+                        console.log('Using cached data (age: ' + Math.round(age / 1000) + 's)');
+                        membersData = data;
+                        loadingEl.style.display = 'none';
+                        displayMembers();
+                        return;
+                    }
+                }
+                
                 console.log('Fetching members from:', API_URL);
                 
                 const response = await fetch(API_URL, {
@@ -772,6 +789,12 @@
                 
                 membersData = data;
                 console.log('Successfully loaded', membersData.length, 'members');
+                
+                // Cache the data
+                sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                    data: membersData,
+                    timestamp: Date.now()
+                }));
                 
                 // Hide loading and display members
                 loadingEl.style.display = 'none';
