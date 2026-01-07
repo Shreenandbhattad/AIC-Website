@@ -4,7 +4,7 @@
 
 Bodhi Capital is India's first undergraduate student-managed investment fund at Ashoka University. This website serves as the official platform showcasing the team, resources, and investment activities.
 
-**Live Website**: https://www.bodhicapital.in/
+**Website**: https://www.bodhicapital.in/
 
 ## Features
 
